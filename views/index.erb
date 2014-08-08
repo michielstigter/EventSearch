@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; \padding: 0 }
+      #map-canvas { height: 100% }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp">
+    </script>
+    <script>
+    var position;
+    </script>
+    <script src="api.js">
+    </script>
+  </head>
+  <body>
+   <div id="panel">
+      <input id="address" type="textbox" value="Sydney, NSW">
+      <input type="button" value="Geocode" >
+    </div>
+    <form id="search_events">
+      <input id="address" type="textbox">
+      <a href='#' id='bollocks'>Search Event</a>
+    </form>
+    <div id="map-canvas"></div>
+
+    <script src='https://code.jquery.com/jquery-2.0.3.min.js'></script>
+    <script>
+      $(document).ready(function() {
+        $('#bollocks').on('click', function(event){
+         // event.preventDefault();
+         codeAddress(function(data){
+          window.position = data;
+          $.post('/event', {longitude: data.lng(), latitude: data.lat()}, function(response) {
+            console.log(response)
+            var results = JSON.parse(response)["results"];
+            $(results).each(function(index){
+              var venue = results[index]['venue'];
+              placeMarker(venue.latitude, venue.longitude);
+            })
+          });
+         });
+         
+
+
+       })
+      });
+
+          // var url = 'http://www.skiddle.com/api/v1/events/?api_key=6bfc32decec200ac7098d9e2f91d47de&latitude=' + position.lat() + '&longitude=' + position.lng() + '&radius=50&Eventcode=FEST'
+
+          // $.get(url, function(events){
+          //   events.forEach(function(event) {
+          //     {console.log(event.longitude);}
+          //   });
+        // }).fail(function(){
+        //     alert('Could not find the user called ' + $('#search_events').val());
+        //   }).always(function(){
+        //     $('#search_events').val('');
+        //   })
+        // });
+      // });
+    </script>
+  </body>
+</html>
